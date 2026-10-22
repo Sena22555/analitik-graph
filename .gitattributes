@@ -1,0 +1,4 @@
+# Статистика языков GitHub: презентация и сторонние библиотеки не считаются кодом проекта
+analytics-graph-engine/документация/** linguist-documentation
+analytics-graph-engine/src/main/resources/static/vendor/** linguist-vendored
+web/** linguist-documentation
