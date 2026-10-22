@@ -1,0 +1,20 @@
+# Секреты: ключ ИИ-провайдера и локальные переменные окружения
+analitik-ai.properties
+.env
+.env.*
+!.env.example
+
+# Сохранённые базы (внутри могут быть заголовки API-источников с токенами)
+workspace/
+
+# Сборка
+target/
+dist/
+*.class
+*.log
+
+# IDE и системные файлы
+.idea/
+*.iml
+.vscode/
+.DS_Store

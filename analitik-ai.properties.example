@@ -1,0 +1,20 @@
+# Analitik Graph — настройки ИИ-аналитика.
+# Скопируйте файл в analitik-ai.properties и впишите свой ключ.
+# analitik-ai.properties в .gitignore — не коммитьте его.
+#
+# Те же значения можно задать переменными окружения:
+# AI_BASE_URL, AI_API_KEY, AI_MODEL, AI_VISION_MODEL, AI_IMAGE_MODEL
+
+# Любой OpenAI-совместимый провайдер (/chat/completions, /models)
+baseUrl=https://api.openai.com/v1
+apiKey=YOUR_API_KEY
+
+# Основная модель
+model=gpt-4o-mini
+# Модель для картинок и скриншотов (пусто — подберётся автоматически)
+visionModel=
+# Модель генерации изображений для презентаций (пусто — подберётся автоматически)
+imageModel=
+
+temperature=0.4
+maxTokens=8000

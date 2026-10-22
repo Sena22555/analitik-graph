@@ -1,0 +1,39 @@
+/* ════════════ Документ-отчёт (предпросмотр A4) ════════════ */
+.sheet{zoom:var(--dz,1);width:794px;margin:0 auto 24px;background:#fff;color:#111;box-shadow:0 1px 3px rgba(0,0,0,.08),0 10px 30px rgba(0,0,0,.08);padding:76px 57px 76px 113px;font:15px/1.5 "PT Serif",Georgia,serif;text-align:justify;hyphens:auto}
+.sheet h1{font-size:15px;font-weight:700;text-transform:uppercase;text-align:center;margin:0 0 22px;letter-spacing:.3px}
+.sheet h2{font-size:15px;font-weight:700;margin:26px 0 12px;text-align:left}
+.sheet p{text-indent:1.25cm;margin:0 0 8px}
+.sheet ul,.sheet ol{margin:0 0 10px 1.25cm}
+.sheet li{margin:3px 0}
+.sheet .cap{text-align:center;font-size:14px;margin:6px 0 16px;text-indent:0}
+.sheet .tcap{text-align:left;font-size:14px;margin:14px 0 6px;text-indent:0}
+.sheet .fig{margin:14px 0 4px}
+.sheet .fig svg{width:100%;height:auto}
+.sheet .fig .ax text{fill:#333}.sheet .fig .ax line,.sheet .fig .ax path{stroke:#bbb}.sheet .fig .grid line{stroke:#e6e6e6}.sheet .fig .vl{fill:#111}
+.sheet .lgd{color:#333;font-size:12px;justify-content:center}
+.sheet table.dt{font-size:12.5px;font-family:"PT Serif",Georgia,serif;color:#111;border:1px solid #111}
+.sheet .tbl-wrap{border:none;border-radius:0;max-height:none;overflow:visible}
+.sheet .dt th{background:#fff;color:#111;border:1px solid #111;position:static;text-align:center;white-space:normal;font-weight:700}
+.sheet .dt td{border:1px solid #111;padding:4px 7px;background:#fff!important;white-space:normal}
+.sheet .dt td.k,.sheet .dt th.k{position:static;background:#fff}
+.sheet .dt tr.tot td{background:#fff;font-weight:700;border-top:1px solid #111}
+.sheet .tnote{font-size:12px;color:#444;text-indent:0}
+.sheet .kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));border:1px solid #111;margin:10px 0 16px}
+.sheet .kgrid div{padding:10px 12px;border-right:1px solid #111;text-align:left;text-indent:0}
+.sheet .kgrid div:last-child{border-right:none}
+.sheet .kgrid b{display:block;font-size:20px}
+.sheet .kgrid span{font-size:12.5px;color:#333}
+.sheet .call{border-left:3px solid #111;padding:6px 12px;margin:10px 0 14px;background:#f6f6f6;text-indent:0}
+.sheet .call.warning{border-color:#a0521a}.sheet .call.success{border-color:#1f6b45}
+.sheet.title-page{display:flex;flex-direction:column;justify-content:space-between;min-height:1123px;text-align:center}
+.sheet.title-page .org{text-transform:uppercase;font-size:14px;line-height:1.45}
+.sheet.title-page .mid{margin-top:-80px}
+.sheet.title-page .rtype{text-transform:uppercase;letter-spacing:.5px;font-size:15px;margin-bottom:14px}
+.sheet.title-page .rtitle{font-size:21px;font-weight:700;line-height:1.35;margin-bottom:14px}
+.sheet.title-page .per{font-size:15px}
+.sheet.title-page .who{text-align:right;font-size:14px;line-height:1.6}
+.sheet.title-page .yr{font-size:14px}
+.sheet .toc div{display:flex;gap:6px;text-indent:0;margin:4px 0}
+.sheet .toc div span:nth-child(2){flex:1;border-bottom:1px dotted #999;transform:translateY(-5px)}
+.sheet .kw{text-transform:uppercase;text-indent:1.25cm}
+.doc-bar-note{font-size:12px;color:var(--muted);margin-left:6px}

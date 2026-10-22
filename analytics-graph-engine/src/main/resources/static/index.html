@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analitik Graph</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('ag.theme')||'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
+<link rel="stylesheet" href="css/app.css?v=8.1">
+<link rel="stylesheet" href="css/slides.css?v=8.1">
+<link rel="stylesheet" href="css/doc.css?v=8.1">
+<link rel="stylesheet" href="css/workspace.css?v=8.1">
+<script src="vendor/d3.min.js"></script>
+<script src="vendor/marked.umd.js"></script>
+<script defer src="vendor/xlsx.full.min.js"></script>
+<script defer src="vendor/pptxgen.bundle.js"></script>
+<script defer src="vendor/pdfmake.min.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-graph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.6"/><circle cx="4.5" cy="6" r="1.8"/><circle cx="19.5" cy="5.5" r="1.8"/><circle cx="19" cy="18.5" r="1.8"/><circle cx="5" cy="18" r="1.8"/><path d="M10 10.6 6 7.1M14 10.5l4-3.6M14.2 13.4l3.4 3.8M9.9 13.5 6.3 16.6"/></symbol><symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10"/></symbol><symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h8l4 4v13H6z"/><path d="M14 3.5v4h4M9 12h6M9 15.5h6M9 9h2"/></symbol><symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5v-11M7.5 9 12 4.5 16.5 9M4.5 15v4.5h15V15"/></symbol><symbol id="i-plug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5v5M15 3.5v5M6.5 8.5h11V12a5.5 5.5 0 0 1-11 0zM12 17.5v3"/></symbol><symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5v14l11-7z"/></symbol><symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M5.2 18.8l1.4-1.4M17.4 6.6l1.4-1.4"/></symbol><symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5h15v10h-9l-4 3.5v-3.5h-2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></symbol><symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12 19.5 5l-4 14.5-3.5-6z"/><path d="m12 13.5 7.5-8.5"/></symbol><symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 7.5 9 14a2 2 0 0 0 2.8 2.8l7-7a4 4 0 0 0-5.6-5.6l-7.2 7.2a6 6 0 0 0 8.5 8.5l5.5-5.5"/></symbol><symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3.5l1.5-2.5h6L16.5 8H20v11H4z"/><circle cx="12" cy="13" r="3.2"/></symbol><symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v11M7.5 11l4.5 4.5 4.5-4.5M4.5 19.5h15"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12a7 7 0 1 1-2.1-5M19 4.5V9h-4.5"/></symbol><symbol id="i-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5v5H4M15 4.5v5h5M9 19.5v-5H4M15 19.5v-5h5"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 4.5 4.5"/></symbol><symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></symbol><symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></symbol><symbol id="i-fit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9V4.5H9M15 4.5h4.5V9M19.5 15v4.5H15M9 19.5H4.5V15"/></symbol><symbol id="i-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.5h5.5V10M10 19.5H4.5V14M19.5 4.5l-6 6M4.5 19.5l6-6"/></symbol><symbol id="i-stop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/></symbol><symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/><circle cx="9" cy="10" r="1.8"/><path d="m4 18 5.5-5 4 3.5 2.5-2 4 3.5"/></symbol><symbol id="i-slides" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="11.5" rx="1.2"/><path d="M12 16v3.5M8 19.5h8"/></symbol><symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9.5 7V4.5h5V7M7 7l.8 12.5h8.4L17 7"/></symbol><symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5h4l10-10-4-4-10 10z"/></symbol><symbol id="i-print" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V4.5h10V9M7 16.5H4.5V9h15v7.5H17M7 13.5h10v6H7z"/></symbol><symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></symbol><symbol id="i-chevl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></symbol><symbol id="i-sql" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6M5 12c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6"/></symbol><symbol id="i-atlas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="8" r="4"/><circle cx="17" cy="7" r="3"/><circle cx="15" cy="17" r="4"/><path d="M10.6 9.6 12.4 14M10.9 7.6l3.2-.4"/></symbol><symbol id="i-route" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 6h7.5a3.5 3.5 0 0 1 0 7h-5a3.5 3.5 0 0 0 0 7H17"/></symbol></defs></svg>
+<div id="app">
+  <header id="top">
+    <div class="logo"><span class="mark"><svg class="i "><use href="#i-graph"/></svg></span><div><b>Analitik Graph</b><small>рабочее место аналитика</small></div></div>
+    <nav class="tabs" id="tabs">
+      <button class="tab on" data-view="Graph"><svg class="i "><use href="#i-graph"/></svg>Граф <b class="cnt" id="wsCnt"></b></button>
+      <button class="tab" data-view="Journey" title="Как клиенты ходят по продукту"><svg class="i "><use href="#i-route"/></svg>Пути</button>
+      <button class="tab" data-view="Sql" title="SQL по всем таблицам (DuckDB)"><svg class="i "><use href="#i-sql"/></svg>SQL</button>
+      <button class="tab" data-view="Pivot"><svg class="i "><use href="#i-table"/></svg>Сводные</button>
+      <button class="tab" data-view="Reports"><svg class="i "><use href="#i-doc"/></svg>Отчёты <b class="cnt" id="deckCnt"></b></button>
+    </nav>
+    <div class="sp"></div>
+    <button class="cmdk" id="bFind" title="Поиск по таблицам, колонкам и действиям"><svg class="i "><use href="#i-search"/></svg><span>Найти таблицу, колонку, действие</span><kbd id="kFind">⌘K</kbd></button>
+    <div class="menu-wrap">
+      <button class="btn" id="bAdd"><svg class="i "><use href="#i-plus"/></svg>Данные<svg class="i caret"><use href="#i-chev"/></svg></button>
+      <div class="menu" id="addMenu">
+        <button data-add="file"><svg class="i "><use href="#i-upload"/></svg><span><b>Загрузить файл</b><small>CSV или JSON — можно просто перетащить в окно</small></span></button>
+        <button data-add="api"><svg class="i "><use href="#i-plug"/></svg><span><b>Подключить по API</b><small>JSON/CSV по ссылке, Google Sheets, автообновление</small></span></button>
+        <button data-add="sql"><svg class="i "><use href="#i-sql"/></svg><span><b>Таблица из SQL-запроса</b><small>JOIN и агрегаты по уже загруженным таблицам</small></span></button>
+        <div class="menu-sep"></div>
+        <button data-add="product"><svg class="i "><use href="#i-atlas"/></svg><span><b>Демо-продукт</b><small>4 связанные таблицы · 1 500 клиентов</small></span></button>
+        <button data-add="raw"><svg class="i "><use href="#i-collapse"/></svg><span><b>Демо: несортированный лог</b><small>плоская выгрузка с мусором — разложите одной кнопкой</small></span></button>
+        <button data-add="demo"><svg class="i "><use href="#i-play"/></svg><span><b>Демо: одна таблица</b><small>1 000 пользователей сайта</small></span></button>
+      </div>
+    </div>
+    <button class="btn icon ghost" id="bTheme" title="Светлая / тёмная тема"><svg class="i moon"><use href="#i-moon"/></svg><svg class="i sun"><use href="#i-sun"/></svg></button>
+    <button class="btn icon ghost" id="bSettings" title="Настройки ИИ"><svg class="i "><use href="#i-gear"/></svg></button>
+    <button class="btn ai-btn" id="bAi"><svg class="i "><use href="#i-chat"/></svg>Аналитик</button>
+  </header>
+
+  <aside id="side">
+    <div class="sec" data-for="Graph Journey">
+      <h4>Таблицы <span class="cnt" id="wsN"></span></h4>
+      <div id="wsList"><div class="empty-s">Баз пока нет. Откройте «Демо-продукт» или загрузите таблицы.</div></div>
+      <div class="ws-acts"><button class="btn sm" id="wsDemo"><svg class="i "><use href="#i-play"/></svg>Демо-продукт</button><button class="btn sm ghost" id="wsAdd"><svg class="i "><use href="#i-upload"/></svg>Добавить базу</button></div>
+    </div>
+    <div class="sec" id="secData" data-for="Graph Pivot Reports" style="display:none">
+      <h4><span class="live" id="live" title="Данные обновляются автоматически"></span><span id="secDataT">Активная таблица</span></h4>
+      <div class="kpis">
+        <div class="kpi"><b id="sRows">–</b><span id="sRowsL">строк</span></div>
+        <div class="kpi"><b id="sVars">–</b><span id="sVarsL">переменных</span></div>
+        <div class="kpi"><b id="sLinks">–</b><span id="sLinksL">значимых связей</span></div>
+      </div>
+      <div class="meta" id="sMeta"></div>
+      <div class="row" id="rowRefresh" style="display:none"><label>Автообновление</label>
+        <select class="sel" id="auto"><option value="0">выкл</option><option value="10">10 сек</option><option value="30">30 сек</option><option value="60">1 мин</option><option value="300">5 мин</option></select>
+        <button class="btn sm icon ghost" id="bRefresh" title="Обновить сейчас"><svg class="i "><use href="#i-refresh"/></svg></button>
+      </div>
+    </div>
+    <div class="sec grow" data-for="Graph Pivot Reports">
+      <h4>Ключевые находки <span class="cnt" id="insCnt"></span></h4>
+      <div id="insights"><div class="empty-s">После загрузки данных здесь появятся статистически подтверждённые закономерности.</div></div>
+    </div>
+    <div class="sec" id="secView" data-for="Graph" data-fold="closed" style="display:none">
+      <h4>Настройки графа</h4>
+      <div class="row"><label>Мин. сила связи</label><input type="range" id="minS" min="0" max="0.9" step="0.05" value="0.2"><b id="minSv" class="num">0,2</b></div>
+      <div class="row"><label>Связи между переменными</label><span class="sw"><input type="checkbox" id="tBrain" checked><i></i></span></div>
+      <div class="row"><label>Влияние сегментов на метрики</label><span class="sw"><input type="checkbox" id="tEff" checked><i></i></span></div>
+      <div class="row"><label>Подписи сильных связей</label><span class="sw"><input type="checkbox" id="tLbl" checked><i></i></span></div>
+      <div class="row"><label>Анимация потоков</label><span class="sw"><input type="checkbox" id="tPulse"><i></i></span></div>
+    </div>
+    <div class="sec" id="secLegend" data-for="Graph" data-fold="closed">
+      <h4>Как читать граф</h4>
+      <div class="lg">
+        <div><span class="l" style="background:var(--strong)"></span>сильная связь</div>
+        <div><span class="d" style="border-color:var(--c-dim)"></span>измерение</div>
+        <div><span class="l" style="background:var(--medium)"></span>средняя</div>
+        <div><span class="d" style="border-color:var(--c-cat)"></span>сегмент</div>
+        <div><span class="l" style="background:var(--weak)"></span>слабая</div>
+        <div><span class="d" style="border-color:var(--c-metric)"></span>метрика</div>
+        <div><span class="l dash"></span>обратная</div>
+        <div><span class="d" style="border-color:var(--c-kpi)"></span>KPI</div>
+        <div><span class="l" style="background:var(--c-funnel)"></span>поток</div>
+        <div><span class="d" style="border-color:var(--c-time)"></span>время</div>
+      </div>
+    </div>
+    <div class="sec" data-for="Sql">
+      <h4>Таблицы <span class="cnt" id="sqlTn"></span></h4>
+      <div id="sqlSchema"><div class="empty-s">Загрузите таблицы — здесь появится их схема.</div></div>
+    </div>
+    <div class="sec grow" data-for="Sql">
+      <h4>Примеры</h4>
+      <div id="sqlEx"></div>
+      <h4 style="margin-top:16px">История</h4>
+      <div id="sqlHist"><div class="empty-s">Выполненные запросы появятся здесь.</div></div>
+    </div>
+    <div class="sec" data-for="Journey">
+      <h4>Параметры путей</h4>
+      <div class="fld2"><label>База событий</label><select class="sel" id="jrDs"></select></div>
+      <div class="fld2"><label>Цель</label><select class="sel" id="jrGoal"></select></div>
+      <div class="fld2"><label>Сегмент</label><div class="pair"><select class="sel" id="jrSegCol"></select><select class="sel" id="jrSegVal"></select></div></div>
+      <div class="row"><label>Мин. доля перехода</label><input type="range" id="jrMin" min="0.02" max="0.2" step="0.01" value="0.04"><b id="jrMinV" class="num">4%</b></div>
+      <div class="lg" style="margin-top:10px">
+        <div><span class="d" style="border-color:var(--pos)"></span>шаг ↑ к цели</div>
+        <div><span class="d" style="border-color:var(--neg)"></span>шаг ↓ к цели</div>
+        <div><span class="d" style="border-color:var(--accent)"></span>цель</div>
+        <div><span class="l" style="background:var(--neg)"></span>дуга — выход</div>
+      </div>
+    </div>
+    <div class="sec grow" data-for="Journey">
+      <h4 id="wsInsT">Находки <span class="cnt" id="wsInsCnt"></span></h4>
+      <div id="wsIns"><div class="empty-s">Здесь появятся статистически подтверждённые закономерности.</div></div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <section class="view" id="viewGraph"><div id="stage">
+      <svg id="g">
+        <defs>
+          <marker id="arF" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--c-funnel)"/></marker>
+          <marker id="arL" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M0,1L10,5L0,9z" fill="var(--accent)"/></marker>
+          <marker id="arS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--strong)"/></marker>
+        </defs>
+        <g id="vp"><g id="gLinks"></g><g id="gPulse"></g><g id="gHit"></g><g id="gLL"></g><g id="gNodes"></g></g>
+      </svg>
+      <div id="hero">
+        <div class="hero">
+          <div class="eyebrow">Analitik Graph</div>
+          <h1>Все базы продукта — на одном графе</h1>
+          <p>Подключите несколько баз: пользователи, события на сайте, платежи, поддержка. Граф покажет, что на что влияет внутри каждой базы, как базы влияют друг на друга и как клиенты ходят по продукту — в процентах и со статистической проверкой.</p>
+          <button class="hero-main" data-act="product"><span class="ic"><svg class="i "><use href="#i-atlas"/></svg></span><span><b>Открыть демо-продукт</b><span>4 связанные базы · 1 500 клиентов · атлас, пути и карта связей</span></span><svg class="i "><use href="#i-chev"/></svg></button>
+          <div class="cards">
+            <button class="card" data-act="api"><span class="ic"><svg class="i "><use href="#i-plug"/></svg></span><b>Подключить API</b><span>JSON или CSV по ссылке, Google Sheets, автообновление</span></button>
+            <button class="card" data-act="csv"><span class="ic"><svg class="i "><use href="#i-upload"/></svg></span><b>Загрузить файл</b><span>CSV или JSON — можно перетащить в окно</span></button>
+            <button class="card" data-act="demo"><span class="ic"><svg class="i "><use href="#i-play"/></svg></span><b>Одна таблица</b><span>1 000 пользователей сайта: источники, подписка, покупки, воронка</span></button>
+          </div>
+          <div class="hint2">Методы: Спирмен, χ² и V Крамера, ANOVA и Краскел–Уоллис, t-тест Уэлча, МНК-регрессия, интервалы Уилсона, контроль FDR (Бенджамини–Хохберг)</div>
+        </div>
+      </div>
+      <div id="crumb"></div>
+      <div id="tblLinks"></div>
+      <div id="panel"></div>
+      <div id="zoom">
+        <button class="btn icon" id="zIn" title="Приблизить"><svg class="i "><use href="#i-plus"/></svg></button>
+        <button class="btn icon" id="zOut" title="Отдалить"><svg class="i "><use href="#i-minus"/></svg></button>
+        <button class="btn icon" id="zFit" title="Вписать (F)"><svg class="i "><use href="#i-fit"/></svg></button>
+        <button class="btn icon" id="bPng" title="Сохранить граф в PNG"><svg class="i "><use href="#i-download"/></svg></button>
+        <button class="btn icon" id="bHelp" title="Как читать граф (?)"><b class="q">?</b></button>
+      </div>
+      <div id="help"></div>
+      <div id="helpPop" class="pop"></div>
+    </div></section>
+
+    <section class="view" id="viewJourney" hidden><div class="wstage" id="jrStage">
+      <svg id="jrSvg"><defs><marker id="jrArrow" viewBox="0 0 10 10" refX="7" refY="5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,1L10,5L0,9z" fill="var(--faint)"/></marker></defs><g id="jrVp"><g id="jrLinks"></g><g id="jrLabels"></g><g id="jrNodes"></g></g></svg>
+      <div class="wbar" id="jrBar"></div>
+      <div class="wempty" id="jrEmpty"></div>
+      <div class="wpanel" id="jrPanel"></div>
+      <div class="wzoom"><button class="btn icon" data-z="in" title="Приблизить"><svg class="i "><use href="#i-plus"/></svg></button><button class="btn icon" data-z="out" title="Отдалить"><svg class="i "><use href="#i-minus"/></svg></button><button class="btn icon" data-z="fit" title="Вписать"><svg class="i "><use href="#i-fit"/></svg></button></div>
+    </div></section>
+
+    <section class="view" id="viewSql" hidden><div class="sqlv">
+      <div class="sql-ed card">
+        <textarea id="sqlEd" spellcheck="false" placeholder="SELECT * FROM &quot;Пользователи&quot; LIMIT 100"></textarea>
+        <div class="sql-bar">
+          <button class="btn primary sm" id="sqlRun"><svg class="i "><use href="#i-play"/></svg>Выполнить <kbd>⌘↵</kbd></button>
+          <span class="sql-st" id="sqlSt"></span>
+          <div class="sp"></div>
+          <button class="btn sm" id="sqlSave" disabled><svg class="i "><use href="#i-plus"/></svg>Сохранить как таблицу</button>
+          <button class="btn sm" id="sqlXlsx" disabled><svg class="i "><use href="#i-download"/></svg>Excel</button>
+          <button class="btn sm" id="sqlAsk"><svg class="i "><use href="#i-chat"/></svg>Написать с ИИ</button>
+        </div>
+      </div>
+      <div class="sql-res card">
+        <div class="sql-tabs"><button class="on" data-t="grid">Таблица</button><button data-t="chart">График</button></div>
+        <div id="sqlGrid" class="dv-grid sql-grid"><div class="empty-big">Напишите запрос или выберите пример слева. Имена таблиц и колонок — в двойных кавычках. Ctrl/⌘ + Enter — выполнить.</div></div>
+        <div id="sqlChart" class="sql-chart" hidden></div>
+      </div>
+    </div></section>
+
+    <section class="view" id="viewPivot" hidden>
+      <div class="pv-bar">
+        <div class="pv-f"><label>Таблица</label><select id="pvDs"></select></div>
+        <div class="pv-f"><label>Строки</label><select id="pvR1"></select><select id="pvR2"></select></div>
+        <div class="pv-f"><label>Столбцы</label><select id="pvC"></select></div>
+        <div class="pv-f"><label>Показатель</label><select id="pvAgg"></select><select id="pvV"></select></div>
+        <div class="pv-f pv-flt"><label>Фильтры</label><div id="pvFilters"></div><button class="btn sm ghost" id="pvAddF"><svg class="i "><use href="#i-plus"/></svg>Фильтр</button></div>
+        <div class="pv-act">
+          <button class="btn primary sm" id="pvRun">Построить</button>
+          <button class="btn sm" id="pvXlsx"><svg class="i "><use href="#i-download"/></svg>Excel</button>
+          <button class="btn sm" id="pvCsv">CSV</button>
+          <button class="btn sm" id="pvAsk"><svg class="i "><use href="#i-chat"/></svg>Разобрать с аналитиком</button>
+        </div>
+      </div>
+      <div class="pv-presets" id="pvPresets"></div>
+      <div class="pv-body">
+        <div class="pv-main"><div class="card" id="pvOut"><div class="empty-big">Выберите строки, столбцы и показатель или один из готовых срезов.</div></div>
+          <div class="card" id="pvChart" hidden></div></div>
+        <aside class="pv-side"><h4>Таблицы из диалога</h4><div id="pvSaved" class="saved"><div class="empty-s">Таблицы, построенные аналитиком, сохраняются здесь.</div></div></aside>
+      </div>
+    </section>
+
+    <section class="view" id="viewReports" hidden>
+      <aside class="rp-list"><h4>Документы и презентации</h4><div id="rpList"></div>
+        <div class="rp-new">
+          <button class="btn sm" id="rpNewDoc"><svg class="i "><use href="#i-doc"/></svg>Отчёт по ГОСТ</button>
+          <button class="btn sm" id="rpNew"><svg class="i "><use href="#i-slides"/></svg>Презентация</button>
+        </div></aside>
+      <div class="rp-main" id="rpMain"><div class="empty-big">Здесь открываются отчёты и презентации: просмотр, смена оформления, экспорт в PDF и PowerPoint.</div></div>
+    </section>
+  </main>
+
+  <aside id="ai">
+    <div class="ai-h">
+      <div class="ai-t">Аналитик</div>
+      <button class="chip" id="aiModel" title="Модель — нажмите, чтобы сменить">…</button>
+      <div class="sp"></div>
+      <button class="btn icon sm ghost" id="aiClear" title="Новый диалог"><svg class="i "><use href="#i-refresh"/></svg></button>
+      <button class="btn icon sm ghost" id="aiClose" title="Скрыть"><svg class="i "><use href="#i-close"/></svg></button>
+    </div>
+    <div class="ai-body" id="aiBody"></div>
+    <div class="ai-foot">
+      <div class="ai-ctx" id="aiCtx"></div>
+      <div class="ai-atts" id="aiAtts"></div>
+      <div class="ai-in">
+        <textarea id="aiInput" rows="1" placeholder="Вопрос к данным, сводная, отчёт или презентация…"></textarea>
+        <div class="ai-tools">
+          <button class="btn icon sm ghost" id="aiAttach" title="Приложить изображение (или вставьте из буфера)"><svg class="i "><use href="#i-clip"/></svg></button>
+          <button class="btn icon sm ghost" id="aiShot" title="Приложить снимок карты"><svg class="i "><use href="#i-camera"/></svg></button>
+          <div class="sp"></div>
+          <button class="btn primary sm" id="aiSend"><svg class="i "><use href="#i-send"/></svg><span>Отправить</span></button>
+        </div>
+      </div>
+      <input type="file" id="aiFile" accept="image/*" multiple>
+    </div>
+  </aside>
+</div>
+
+<div id="tip"></div>
+<div id="toast"></div>
+<div id="loader"><div class="spin"></div><div id="loaderT">Считаем статистику…</div></div>
+<input type="file" id="file" accept=".csv,.tsv,.txt,.json">
+
+<div class="modal-bg" id="mApi">
+  <div class="modal">
+    <h3>Подключение источника</h3>
+    <p class="s">Сервер сам заберёт данные по ссылке (JSON-массив объектов, <code>{"data":[…]}</code> или CSV), проанализирует и будет обновлять граф.</p>
+    <div class="fld"><label>URL источника</label><input id="aUrl" placeholder="https://api.example.com/users  или ссылка на Google Sheets"></div>
+    <div class="ex">
+      <button data-u="demo-live">Демо-API (живые данные)</button>
+      <button data-u="demo-csv">Демо-API в CSV</button>
+    </div>
+    <div class="fld"><label>Заголовки запроса (по одному в строке)</label><textarea id="aHdr" placeholder="Authorization: Bearer ваш_токен"></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 150px;gap:10px">
+      <div class="fld"><label>Название</label><input id="aName" placeholder="Пользователи сайта"></div>
+      <div class="fld"><label>Автообновление</label><select id="aAuto"><option value="0">выкл</option><option value="10">каждые 10 сек</option><option value="30" selected>каждые 30 сек</option><option value="60">каждую минуту</option><option value="300">каждые 5 мин</option></select></div>
+    </div>
+    <details style="margin-top:4px"><summary style="cursor:pointer;color:var(--muted);font-size:12px">Или отправляйте данные в граф сами (push API)</summary>
+      <pre class="code" id="pushCode"></pre>
+    </details>
+    <div class="mf"><button class="btn ghost" data-close>Отмена</button><button class="btn primary" id="aGo">Подключить и построить</button></div>
+  </div>
+</div>
+
+
+
+<div class="modal-bg" id="mSet">
+  <div class="modal">
+    <h3>Настройки ИИ</h3>
+    <p class="s">Любой OpenAI-совместимый провайдер. Ключ хранится только на сервере в файле <code id="setFile">analitik-ai.properties</code> и не передаётся в браузер.</p>
+    <div class="fld"><label>Base URL</label><input id="setUrl" placeholder="https://api.openai.com/v1"></div>
+    <div class="fld"><label>API-ключ</label><input id="setKey" type="password" placeholder="sk-…" autocomplete="off"></div>
+    <div class="grid3">
+      <div class="fld"><label>Основная модель</label><input id="setModel" list="modelList" placeholder="gpt-4o-mini"></div>
+      <div class="fld"><label>Модель для изображений на входе</label><input id="setVision" list="modelList" placeholder="авто"></div>
+      <div class="fld"><label>Генерация изображений</label><input id="setImage" list="modelList" placeholder="авто, напр. gpt-image-1"></div>
+    </div>
+    <datalist id="modelList"></datalist>
+    <div class="set-status" id="setStatus"></div>
+    <div class="mf"><button class="btn ghost" id="setTest">Проверить подключение</button><div class="sp"></div><button class="btn ghost" data-close>Отмена</button><button class="btn primary" id="setSave">Сохранить</button></div>
+  </div>
+</div>
+<div class="modal-bg" id="mBig"><div class="modal big"><button class="x" data-close><svg class="i "><use href="#i-close"/></svg></button><div id="bigBody"></div></div></div>
+
+<script src="js/core.js?v=8.1"></script>
+<script src="js/viz.js?v=8.1"></script>
+<script src="js/graph.js?v=8.1"></script>
+<script src="js/pivot.js?v=8.1"></script>
+<script src="js/deck.js?v=8.1"></script>
+<script src="js/report.js?v=8.1"></script>
+<script src="js/ai.js?v=8.1"></script>
+<script src="js/workspace.js?v=8.1"></script>
+<script src="js/journey.js?v=8.1"></script>
+<script src="js/data.js?v=8.1"></script>
+<script src="js/sql.js?v=8.1"></script>
+<script src="js/structure.js?v=8.1"></script>
+<script src="js/compose.js?v=8.1"></script>
+<script src="js/palette.js?v=8.1"></script>
+<script src="js/shell.js?v=8.1"></script>
+</body>
+</html>

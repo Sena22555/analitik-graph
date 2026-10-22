@@ -1,0 +1,1112 @@
+[
+ {
+  "type": "function",
+  "function": {
+   "name": "data_quality",
+   "description": "Аудит качества данных: пропуски, дубликаты, экстремумы, асимметрия, константы. Делай в начале серьёзного анализа.",
+   "parameters": {
+    "type": "object",
+    "properties": {}
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "pivot_table",
+   "description": "Сводная таблица: группировка по 1–2 измерениям (rows), разбивка по столбцам (columns), агрегат по values. Числовые измерения режутся на квартили. Пользователь получает таблицу с экспортом в Excel.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "rows": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Колонки строк (0–2)"
+     },
+     "columns": {
+      "type": "string"
+     },
+     "values": {
+      "type": "string"
+     },
+     "agg": {
+      "type": "string",
+      "description": "rate = доля строк со значением > 0 (напр. доля купивших)",
+      "enum": [
+       "count",
+       "share",
+       "sum",
+       "mean",
+       "median",
+       "min",
+       "max",
+       "rate",
+       "distinct"
+      ]
+     },
+     "filters": {
+      "$ref": "#/filters"
+     },
+     "title": {
+      "type": "string"
+     },
+     "top": {
+      "type": "integer"
+     }
+    },
+    "required": [
+     "agg"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "chart",
+   "description": "График (значения считает сервер). bar/line/pie: x — измерение, y+agg — значение, group — серии. histogram — распределение x. scatter — x и y числовые.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "type": {
+      "type": "string",
+      "enum": [
+       "bar",
+       "line",
+       "pie",
+       "histogram",
+       "scatter"
+      ]
+     },
+     "x": {
+      "type": "string"
+     },
+     "y": {
+      "type": "string"
+     },
+     "agg": {
+      "type": "string",
+      "enum": [
+       "count",
+       "share",
+       "sum",
+       "mean",
+       "median",
+       "min",
+       "max",
+       "rate"
+      ]
+     },
+     "group": {
+      "type": "string"
+     },
+     "title": {
+      "type": "string"
+     },
+     "filters": {
+      "$ref": "#/filters"
+     },
+     "top": {
+      "type": "integer"
+     }
+    },
+    "required": [
+     "type",
+     "x"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "compare_segments",
+   "description": "Сравнение групп со статистикой: для числовой метрики — среднее, 95% ДИ, медиана, разница с остальными, g Хеджеса, q (FDR) + ANOVA/Краскел–Уоллис; для категориальной — доли и χ² с V Крамера.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "metric": {
+      "type": "string"
+     },
+     "group_by": {
+      "type": "string"
+     },
+     "filters": {
+      "$ref": "#/filters"
+     }
+    },
+    "required": [
+     "metric",
+     "group_by"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "drivers",
+   "description": "Многофакторная регрессия (МНК): что реально влияет на метрику при учёте остальных факторов. Автоматически исключает утечки. Главный инструмент для вопросов «почему» и «что влияет».",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "target": {
+      "type": "string",
+      "description": "Числовая целевая метрика"
+     },
+     "factors": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Необязательно: список факторов; по умолчанию — все"
+     },
+     "filters": {
+      "$ref": "#/filters"
+     }
+    },
+    "required": [
+     "target"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "abc_analysis",
+   "description": "ABC/Парето: какие группы дают 80% результата (A), 15% (B), 5% (C).",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "dim": {
+      "type": "string"
+     },
+     "value": {
+      "type": "string",
+      "description": "Числовая колонка; без неё — по количеству"
+     },
+     "filters": {
+      "$ref": "#/filters"
+     }
+    },
+    "required": [
+     "dim"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "trend",
+   "description": "Динамика метрики по времени: значения по периодам, изменение к предыдущему, скользящее среднее, значимость линейного тренда и прогноз с 95% интервалом.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "metric": {
+      "type": "string"
+     },
+     "agg": {
+      "type": "string",
+      "enum": [
+       "count",
+       "sum",
+       "mean",
+       "median",
+       "rate",
+       "share"
+      ]
+     },
+     "date": {
+      "type": "string"
+     },
+     "granularity": {
+      "type": "string",
+      "enum": [
+       "day",
+       "week",
+       "month",
+       "quarter",
+       "year"
+      ]
+     },
+     "horizon": {
+      "type": "integer",
+      "description": "Периодов прогноза (0–12)"
+     },
+     "filters": {
+      "$ref": "#/filters"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "anomalies",
+   "description": "Аномалии: по группам/периодам (робастный z по MAD) или экстремальные записи (3×IQR).",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "metric": {
+      "type": "string"
+     },
+     "by": {
+      "type": "string",
+      "description": "Измерение или дата; без него — поиск экстремальных записей"
+     },
+     "filters": {
+      "$ref": "#/filters"
+     }
+    },
+    "required": [
+     "metric"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "financial_summary",
+   "description": "Финансовая сводка и юнит-экономика (бухгалтерский взгляд): выручка, структура выручки, доля платящих, ARPU, ARPPU, средний чек, валовая прибыль и маржа (если есть себестоимость), оценка скидок, концентрация выручки (топ-20%, Джини).",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "revenue": {
+      "type": "string"
+     },
+     "cost": {
+      "type": "string"
+     },
+     "orders": {
+      "type": "string"
+     },
+     "group_by": {
+      "type": "string"
+     },
+     "filters": {
+      "$ref": "#/filters"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "funnel",
+   "description": "Воронка: сколько дошли до каждого этапа, конверсии шагов, опционально в разрезе by.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "by": {
+      "type": "string"
+     },
+     "filters": {
+      "$ref": "#/filters"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "correlations",
+   "description": "Сильнейшие статистически значимые связи из графа (q<0.05 после поправки Бенджамини–Хохберга).",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "column": {
+      "type": "string"
+     },
+     "top": {
+      "type": "integer"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "add_column",
+   "description": "Изменить данные: вычисляемая колонка по формуле. Колонки в [скобках], строки в кавычках. + - * / % > < >= <= == != and or not; if(усл,a,b), round(x,n), abs, log, sqrt, min, max, coalesce, lower, upper, contains, year, month, weekday, bucket(x,10,20,50). Граф пересчитается.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "formula": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "name",
+     "formula"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "filter_dataset",
+   "description": "Создать срез данных по фильтрам и открыть для него отдельный граф.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "filters": {
+      "$ref": "#/filters"
+     }
+    },
+    "required": [
+     "filters"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "graph_action",
+   "description": "Управлять графом на экране: expand/focus/highlight/reset. target {column} — переменная, {column, value} — сегмент.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "action": {
+      "type": "string",
+      "enum": [
+       "expand",
+       "focus",
+       "highlight",
+       "reset"
+      ]
+     },
+     "targets": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "column": {
+         "type": "string"
+        },
+        "value": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "column"
+       ]
+      }
+     }
+    },
+    "required": [
+     "action"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "generate_image",
+   "description": "Сгенерировать изображение отдельной image-моделью (иллюстрация, обложка, концепт). Без текста и логотипов на картинке.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "prompt": {
+      "type": "string",
+      "description": "Подробное описание сцены на английском: объект, композиция, свет, стиль"
+     },
+     "aspect": {
+      "type": "string",
+      "enum": [
+       "landscape",
+       "square",
+       "portrait"
+      ]
+     }
+    },
+    "required": [
+     "prompt"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "create_presentation",
+   "description": "Презентация. Сервер сам считает все графики/таблицы/KPI по спецификациям и генерирует изображения по image_prompt. Пользователь получает слайды с экспортом в PowerPoint и PDF.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "title": {
+      "type": "string"
+     },
+     "subtitle": {
+      "type": "string"
+     },
+     "theme": {
+      "type": "string",
+      "description": "executive — совет директоров; ledger — финансы/бухгалтерия; editorial — аналитическая записка/сторителлинг; midnight — тёмная, для демо; bold — маркетинг/продукт; minimal — швейцарский минимализм",
+      "enum": [
+       "executive",
+       "ledger",
+       "editorial",
+       "midnight",
+       "bold",
+       "minimal"
+      ]
+     },
+     "slides": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "layout": {
+         "type": "string",
+         "description": "title — обложка; agenda — план; section — раздел; bullets — тезисы; kpis — 2–4 карточки; big_number — одна ключевая цифра (kpis[0]); chart — график+выводы; table — таблица+выводы; comparison — два столбца left/right; quote — главный вывод крупно (subtitle); timeline — шаги (bullets); image — иллюстрация+текст; recommendations — действия; closing — итог",
+         "enum": [
+          "title",
+          "agenda",
+          "section",
+          "bullets",
+          "kpis",
+          "big_number",
+          "chart",
+          "table",
+          "comparison",
+          "quote",
+          "timeline",
+          "image",
+          "recommendations",
+          "closing"
+         ]
+        },
+        "title": {
+         "type": "string",
+         "description": "Заголовок-вывод, а не тема"
+        },
+        "subtitle": {
+         "type": "string"
+        },
+        "bullets": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "kpis": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "label": {
+            "type": "string"
+           },
+           "value": {
+            "type": "string",
+            "description": "Готовое значение, если уже посчитано инструментом"
+           },
+           "column": {
+            "type": "string"
+           },
+           "agg": {
+            "type": "string",
+            "enum": [
+             "count",
+             "share",
+             "sum",
+             "mean",
+             "median",
+             "min",
+             "max",
+             "rate"
+            ]
+           },
+           "filters": {
+            "$ref": "#/filters"
+           },
+           "note": {
+            "type": "string",
+            "description": "Пояснение/динамика, напр. «+12% к прошлому месяцу»"
+           }
+          },
+          "required": [
+           "label"
+          ]
+         }
+        },
+        "chart": {
+         "type": "object",
+         "properties": {
+          "type": {
+           "type": "string",
+           "enum": [
+            "bar",
+            "line",
+            "pie",
+            "histogram",
+            "scatter"
+           ]
+          },
+          "x": {
+           "type": "string"
+          },
+          "y": {
+           "type": "string"
+          },
+          "agg": {
+           "type": "string",
+           "enum": [
+            "count",
+            "share",
+            "sum",
+            "mean",
+            "median",
+            "min",
+            "max",
+            "rate"
+           ]
+          },
+          "group": {
+           "type": "string"
+          },
+          "title": {
+           "type": "string"
+          },
+          "filters": {
+           "$ref": "#/filters"
+          },
+          "top": {
+           "type": "integer"
+          }
+         }
+        },
+        "table": {
+         "type": "object",
+         "properties": {
+          "kind": {
+           "type": "string",
+           "description": "pivot | compare | funnel | drivers | abc | trend | finance | quality | anomalies",
+           "enum": [
+            "pivot",
+            "compare",
+            "funnel",
+            "drivers",
+            "abc",
+            "trend",
+            "finance",
+            "quality",
+            "anomalies"
+           ]
+          },
+          "rows": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          },
+          "columns": {
+           "type": "string"
+          },
+          "values": {
+           "type": "string"
+          },
+          "agg": {
+           "type": "string"
+          },
+          "metric": {
+           "type": "string"
+          },
+          "group_by": {
+           "type": "string"
+          },
+          "by": {
+           "type": "string"
+          },
+          "target": {
+           "type": "string"
+          },
+          "dim": {
+           "type": "string"
+          },
+          "value": {
+           "type": "string"
+          },
+          "filters": {
+           "$ref": "#/filters"
+          },
+          "top": {
+           "type": "integer"
+          },
+          "title": {
+           "type": "string"
+          }
+         }
+        },
+        "left": {
+         "type": "object",
+         "properties": {
+          "title": {
+           "type": "string"
+          },
+          "value": {
+           "type": "string"
+          },
+          "bullets": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          }
+         }
+        },
+        "right": {
+         "type": "object",
+         "properties": {
+          "title": {
+           "type": "string"
+          },
+          "value": {
+           "type": "string"
+          },
+          "bullets": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          }
+         }
+        },
+        "image_prompt": {
+         "type": "string",
+         "description": "Если нужна иллюстрация: описание на английском, без текста на изображении"
+        },
+        "notes": {
+         "type": "string",
+         "description": "Заметки докладчика"
+        }
+       },
+       "required": [
+        "layout",
+        "title"
+       ]
+      }
+     }
+    },
+    "required": [
+     "title",
+     "slides"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "create_report",
+   "description": "Официальный аналитический/финансовый отчёт-документ по структуре ГОСТ 7.32-2017 (титульный лист, реферат, содержание, введение, разделы с нумерованными рисунками и таблицами, заключение, рекомендации, приложения). Сервер считает все таблицы/графики по спецификациям. Пользователь получает документ с экспортом в PDF.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "title": {
+      "type": "string"
+     },
+     "report_type": {
+      "type": "string",
+      "description": "Напр.: «Аналитический отчёт», «Финансово-экономический отчёт», «Управленческий отчёт»"
+     },
+     "organization": {
+      "type": "string"
+     },
+     "author": {
+      "type": "string"
+     },
+     "period": {
+      "type": "string"
+     },
+     "abstract": {
+      "type": "string",
+      "description": "Реферат: 5–8 предложений — объект, цель, методы, результаты, рекомендации"
+     },
+     "keywords": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "introduction": {
+      "type": "string",
+      "description": "Введение: цель, задачи, объект, период, источник данных"
+     },
+     "sections": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "title": {
+         "type": "string"
+        },
+        "blocks": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "type": {
+            "type": "string",
+            "enum": [
+             "text",
+             "bullets",
+             "chart",
+             "table",
+             "kpis",
+             "callout"
+            ]
+           },
+           "text": {
+            "type": "string"
+           },
+           "items": {
+            "type": "array",
+            "items": {
+             "type": "string"
+            }
+           },
+           "caption": {
+            "type": "string",
+            "description": "Подпись рисунка/таблицы"
+           },
+           "chart": {
+            "type": "object",
+            "properties": {
+             "type": {
+              "type": "string",
+              "enum": [
+               "bar",
+               "line",
+               "pie",
+               "histogram",
+               "scatter"
+              ]
+             },
+             "x": {
+              "type": "string"
+             },
+             "y": {
+              "type": "string"
+             },
+             "agg": {
+              "type": "string",
+              "enum": [
+               "count",
+               "share",
+               "sum",
+               "mean",
+               "median",
+               "min",
+               "max",
+               "rate"
+              ]
+             },
+             "group": {
+              "type": "string"
+             },
+             "title": {
+              "type": "string"
+             },
+             "filters": {
+              "$ref": "#/filters"
+             },
+             "top": {
+              "type": "integer"
+             }
+            }
+           },
+           "table": {
+            "type": "object",
+            "properties": {
+             "kind": {
+              "type": "string",
+              "description": "pivot | compare | funnel | drivers | abc | trend | finance | quality | anomalies",
+              "enum": [
+               "pivot",
+               "compare",
+               "funnel",
+               "drivers",
+               "abc",
+               "trend",
+               "finance",
+               "quality",
+               "anomalies"
+              ]
+             },
+             "rows": {
+              "type": "array",
+              "items": {
+               "type": "string"
+              }
+             },
+             "columns": {
+              "type": "string"
+             },
+             "values": {
+              "type": "string"
+             },
+             "agg": {
+              "type": "string"
+             },
+             "metric": {
+              "type": "string"
+             },
+             "group_by": {
+              "type": "string"
+             },
+             "by": {
+              "type": "string"
+             },
+             "target": {
+              "type": "string"
+             },
+             "dim": {
+              "type": "string"
+             },
+             "value": {
+              "type": "string"
+             },
+             "filters": {
+              "$ref": "#/filters"
+             },
+             "top": {
+              "type": "integer"
+             },
+             "title": {
+              "type": "string"
+             }
+            }
+           },
+           "kpis": {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "label": {
+               "type": "string"
+              },
+              "value": {
+               "type": "string",
+               "description": "Готовое значение, если уже посчитано инструментом"
+              },
+              "column": {
+               "type": "string"
+              },
+              "agg": {
+               "type": "string",
+               "enum": [
+                "count",
+                "share",
+                "sum",
+                "mean",
+                "median",
+                "min",
+                "max",
+                "rate"
+               ]
+              },
+              "filters": {
+               "$ref": "#/filters"
+              },
+              "note": {
+               "type": "string",
+               "description": "Пояснение/динамика, напр. «+12% к прошлому месяцу»"
+              }
+             },
+             "required": [
+              "label"
+             ]
+            }
+           },
+           "tone": {
+            "type": "string",
+            "enum": [
+             "info",
+             "warning",
+             "success"
+            ]
+           }
+          },
+          "required": [
+           "type"
+          ]
+         }
+        }
+       },
+       "required": [
+        "title",
+        "blocks"
+       ]
+      }
+     },
+     "conclusions": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "recommendations": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "action": {
+         "type": "string"
+        },
+        "effect": {
+         "type": "string",
+         "description": "Ожидаемый эффект, по возможности в деньгах/п.п."
+        },
+        "priority": {
+         "type": "string",
+         "enum": [
+          "высокий",
+          "средний",
+          "низкий"
+         ]
+        },
+        "owner": {
+         "type": "string"
+        },
+        "metric": {
+         "type": "string",
+         "description": "Как измерить результат"
+        }
+       },
+       "required": [
+        "action"
+       ]
+      }
+     },
+     "limitations": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "required": [
+     "title",
+     "sections"
+    ]
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "workspace_atlas",
+   "description": "Атлас рабочего пространства: все базы (пользователи, события, платежи, поддержка…) сводятся к одной строке на клиента по общему ключу, и проверяются связи МЕЖДУ базами (Спирмен / ANOVA / χ², поправка Бенджамини–Хохберга). Используй, когда вопрос касается нескольких баз: как поведение на сайте связано с деньгами, поддержкой, оттоком.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "top": {
+      "type": "integer",
+      "description": "Сколько сильнейших связей вернуть (по умолчанию 15)"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "journey",
+   "description": "Граф путей по базе событий: доля клиентов на каждом шаге, процент выхода, конверсия в цель у побывавших на шаге против остальных (z-тест долей, FDR), частые пути к цели. Можно ограничить сегментом. Используй для вопросов «где теряем клиентов», «как ходят по сайту», «что помогает дойти до оплаты».",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "goal": {
+      "type": "string",
+      "description": "Шаг-цель (по умолчанию определяется сам, например «Оплата»)"
+     },
+     "segment_column": {
+      "type": "string",
+      "description": "Колонка сегмента (из базы событий или базы клиентов), например «ОС»"
+     },
+     "segment_value": {
+      "type": "string",
+      "description": "Значение сегмента, например «iOS»"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "journey_profile",
+   "description": "Кто эти люди: профиль клиентов, побывавших на шаге (step), сделавших переход (from → to) или ушедших с шага (exit_from), против остальных клиентов — какие сегменты перепредставлены (z-тест долей, FDR) и их конверсия в цель.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "step": {
+      "type": "string"
+     },
+     "from": {
+      "type": "string"
+     },
+     "to": {
+      "type": "string"
+     },
+     "exit_from": {
+      "type": "string"
+     },
+     "goal": {
+      "type": "string"
+     },
+     "segment_column": {
+      "type": "string",
+      "description": "Колонка сегмента (из базы событий или базы клиентов), например «ОС»"
+     },
+     "segment_value": {
+      "type": "string",
+      "description": "Значение сегмента, например «iOS»"
+     }
+    }
+   }
+  }
+ },
+ {
+  "type": "function",
+  "function": {
+   "name": "run_sql",
+   "description": "Выполнить читающий SQL-запрос (DuckDB) по всем таблицам рабочего пространства — JOIN между таблицами, оконные функции, произвольные агрегации. Имена таблиц и колонок — в двойных кавычках, как в схеме контекста (например SELECT \"Источник трафика\", COUNT(*) FROM \"Пользователи\" GROUP BY 1). Только SELECT/WITH; один запрос; результат — до 200 строк. Используй, когда стандартных инструментов не хватает.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "sql": {
+      "type": "string",
+      "description": "Один читающий запрос DuckDB"
+     },
+     "title": {
+      "type": "string",
+      "description": "Заголовок таблицы-результата — вывод, а не тема"
+     }
+    },
+    "required": [
+     "sql"
+    ]
+   }
+  }
+ }
+]
